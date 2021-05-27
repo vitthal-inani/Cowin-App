@@ -1,5 +1,6 @@
 import 'package:cowinbooking/Screens/OTPScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,9 +9,14 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: OTPScreen(),
+    return GetMaterialApp(
+      home: MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text("OTP Authentication"),
+          ),
+          body: OTPScreen(),
+        ),
       ),
     );
   }
