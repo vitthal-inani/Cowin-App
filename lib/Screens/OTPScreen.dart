@@ -77,6 +77,7 @@ class _OTPScreenState extends State<OTPScreen> {
               child: Form(
                 key: _formotp,
                 child: TextFormField(
+
                   validator: (inp) {
                     if (inp!.isEmpty) return "OTP cant be empty";
                     return null;

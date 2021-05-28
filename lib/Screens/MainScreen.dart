@@ -1,5 +1,5 @@
 import 'package:cowinbooking/NetworkCalls.dart';
-import 'package:cowinbooking/Screens/CodeSearch.dart';
+import 'package:cowinbooking/Screens/PinCodeScreen.dart';
 import 'package:cowinbooking/Screens/DistrictSearch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +13,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool activate = false;
+  List<bool> selected = List.filled(4, false);
   Meta.MetaData control = Get.put(Meta.MetaData());
 
   @override
@@ -111,32 +112,38 @@ class _MainScreenState extends State<MainScreen> {
                       child: Text("No Beneficiaries"),
                     );
                   List bens = snapshot.data!['beneficiaries'];
-                  return SizedBox(
-                    height: _size.height * 0.2,
+
+                  return Container(
+                    height: _size.height * 0.5,
                     width: _size.width * 0.8,
+                    alignment: Alignment.center,
                     child: ListView.builder(
                         itemCount: bens.length,
                         itemBuilder: (context, index) {
                           // print(bens[index]);
-                          return CheckboxListTile(
-                            selected: activate,
-                            value: activate,
-                            onChanged: (check) {
-                              setState(() {
-                                activate = check!;
-                              });
-                              if (activate == false) {
-                                control.removeBen(
-                                    bens[index]['beneficiary_reference_id']);
-                              }
-                              if (activate == true) {
-                                control.addBen(
-                                    bens[index]['beneficiary_reference_id']);
-                              }
-                              // print(control.bens);
-                            },
-                            title: Text(bens[index]['name']),
-                            subtitle: Text(bens[index]['vaccination_status']),
+                          return Container(
+                            // decoration: BoxDecoration(border: Border.all(width: 2,color:Colors.lightBlueAccent)),
+                            margin: EdgeInsets.symmetric(vertical: _size.height*0.01),
+                            child: CheckboxListTile(
+                              selected: selected[index],
+                              value: selected[index],
+                              onChanged: (check) {
+                                setState(() {
+                                  selected[index] = check!;
+                                });
+                                if (selected[index] == false) {
+                                  control.removeBen(
+                                      bens[index]['beneficiary_reference_id']);
+                                }
+                                if (selected[index] == true) {
+                                  control.addBen(
+                                      bens[index]['beneficiary_reference_id']);
+                                }
+                                // print(control.bens);
+                              },
+                              title: Text(bens[index]['name']),
+                              subtitle: Text(bens[index]['vaccination_status']),
+                            ),
                           );
                         }),
                   );
