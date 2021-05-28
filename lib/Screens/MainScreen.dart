@@ -1,4 +1,5 @@
 import 'package:cowinbooking/NetworkCalls.dart';
+import 'package:cowinbooking/Screens/CodeSearch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,7 +52,41 @@ class _MainScreenState extends State<MainScreen> {
                         borderRadius: BorderRadius.circular(30)),
                     padding: EdgeInsets.only(
                         left: 15, right: 18, top: 10, bottom: 10)),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: SizedBox(
+                            height: _size.height * 0.25,
+                            width: _size.width * 0.6,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 18, horizontal: 10),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    "Search by District or PinCode?",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: () {},
+                                      child: Text("District")),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        Get.to(() => codeSearch());
+                                      },
+                                      child: Text("Pin Code")),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      });
+                },
                 icon: Icon(
                   Icons.arrow_forward,
                   size: 22,
