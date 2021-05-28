@@ -5,6 +5,7 @@ import 'package:cowinbooking/Metadata.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
 class NetworkCalls {
   // ignore: non_constant_identifier_names
   static final String otp_url =
@@ -13,6 +14,11 @@ class NetworkCalls {
       "https://cdn-api.co-vin.in/api/v2/auth/validateMobileOtp";
   static final String benef =
       "https://cdn-api.co-vin.in/api/v2/appointment/beneficiaries";
+  static final String pinSearch = "";
+  static final String states =
+      "https://cdn-api.co-vin.in/api/v2/admin/location/states";
+  static final String districts =
+      "https://cdn-api.co-vin.in/api/v2/admin/location/districts/";
   static final MetaData meta = Get.put(MetaData());
 
   static Future<http.Response> getOTP(String number) async {
@@ -51,6 +57,26 @@ class NetworkCalls {
     };
     http.Response response = await http.get(Uri.parse(benef), headers: headers);
     // print(response.body);
+    return jsonDecode(response.body);
+  }
+
+  static Future<Map> getStates() async {
+    Map<String, String>? headers = {
+      'origin': 'https://selfregistration.cowin.gov.in/',
+      'referer': 'https://selfregistration.cowin.gov.in/',
+    };
+    http.Response response =
+        await http.get(Uri.parse(states), headers: headers);
+    return jsonDecode(response.body);
+  }
+
+  static Future<Map> getDistrict(int id) async {
+    Map<String, String>? headers = {
+      'origin': 'https://selfregistration.cowin.gov.in/',
+      'referer': 'https://selfregistration.cowin.gov.in/',
+    };
+    http.Response response =
+        await http.get(Uri.parse(districts + id.toString()), headers: headers);
     return jsonDecode(response.body);
   }
 }

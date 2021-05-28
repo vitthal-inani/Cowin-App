@@ -1,5 +1,6 @@
 import 'package:cowinbooking/NetworkCalls.dart';
 import 'package:cowinbooking/Screens/CodeSearch.dart';
+import 'package:cowinbooking/Screens/DistrictSearch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -73,7 +74,9 @@ class _MainScreenState extends State<MainScreen> {
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Get.to(() => districtSearch());
+                                      },
                                       child: Text("District")),
                                   ElevatedButton(
                                       onPressed: () {
