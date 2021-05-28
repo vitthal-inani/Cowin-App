@@ -18,75 +18,82 @@ class _districtSearchState extends State<districtSearch> {
       appBar: AppBar(title: Text("Choose your location")),
       body: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: _size.height * 0.1, vertical: _size.width * 0.5),
+            horizontal: _size.width * 0.05, vertical: _size.height * 0.05),
         child: Column(
           children: [
-            FutureBuilder(
-                future: NetworkCalls.getStates(),
-                builder: (context, AsyncSnapshot<Map> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.data != null) {
-                      // print(snapshot.data);
-                      List states = [];
-                      for (var i in snapshot.data!['states']) {
-                        states.add(i['state_name']);
-                      }
-
-                      return DropdownButton(
-                        hint: Text("State ..."),
-                        value: _selectedState,
-                        items: states
-                            .map((e) => DropdownMenuItem(
-                                  child: Text(e),
-                                  value: e,
-                                ))
-                            .toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedState = val.toString();
-                            _stateid = states.indexOf(_selectedState);
-                          });
-                        },
-                      );
-                    }
-                  }
-                  return CircularProgressIndicator();
-                }),
-            SizedBox(
-              height: 35,
-            ),
-            (_selectedState != null)
-                ? FutureBuilder(
-                    future: NetworkCalls.getDistrict(_stateid),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FutureBuilder(
+                    future: NetworkCalls.getStates(),
                     builder: (context, AsyncSnapshot<Map> snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.data != null) {
-                          print(snapshot.data);
-                          List _districts = [];
-                          for (var i in snapshot.data!['districts']) {
-                            _districts.add(i['district_name']);
+                          // print(snapshot.data);
+                          List states = [];
+                          for (var i in snapshot.data!['states']) {
+                            states.add(i['state_name']);
                           }
 
-                          return DropdownButton(
-                            hint: Text("District ..."),
-                            value: _selectedDistrict,
-                            items: _districts
-                                .map((e) => DropdownMenuItem(
-                                      child: Text(e),
-                                      value: e,
-                                    ))
-                                .toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                _selectedDistrict = val.toString();
-                              });
-                            },
+                          return SizedBox(
+                            width: _size.width * 0.35,
+                            child: DropdownButton(
+                              hint: Text("State ..."),
+                              isExpanded: true,
+                              value: _selectedState,
+                              items: states
+                                  .map((e) => DropdownMenuItem(
+                                        child: Text(e),
+                                        value: e,
+                                      ))
+                                  .toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedState = val.toString();
+                                  _stateid = states.indexOf(_selectedState);
+                                });
+                              },
+                            ),
                           );
                         }
                       }
                       return CircularProgressIndicator();
-                    })
-                : Text("Select State"),
+                    }),
+                (_selectedState != null)
+                    ? FutureBuilder(
+                        future: NetworkCalls.getDistrict(_stateid),
+                        builder: (context, AsyncSnapshot<Map> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            if (snapshot.data != null) {
+                              print(snapshot.data);
+                              List _districts = [];
+                              for (var i in snapshot.data!['districts']) {
+                                _districts.add(i['district_name']);
+                              }
+
+                              return DropdownButton(
+                                hint: Text("District ..."),
+                                value: _selectedDistrict,
+                                items: _districts
+                                    .map((e) => DropdownMenuItem(
+                                          child: Text(e),
+                                          value: e,
+                                        ))
+                                    .toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    _selectedDistrict = val.toString();
+                                  });
+                                },
+                              );
+                            }
+                          }
+                          return CircularProgressIndicator();
+                        })
+                    : Text("Select State"),
+              ],
+            ),
           ],
         ),
       ),
