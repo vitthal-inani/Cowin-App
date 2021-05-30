@@ -81,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                                       child: Text("District")),
                                   ElevatedButton(
                                       onPressed: () {
-                                        Get.to(() => codeSearch());
+                                        Get.to(() => pinCodeSearch());
                                       },
                                       child: Text("Pin Code")),
                                 ],

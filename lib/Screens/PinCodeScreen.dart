@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
-class codeSearch extends StatefulWidget {
+class pinCodeSearch extends StatefulWidget {
   @override
-  _codeSearchState createState() => _codeSearchState();
+  _pinCodeSearchState createState() => _pinCodeSearchState();
 }
 
-class _codeSearchState extends State<codeSearch> {
+class _pinCodeSearchState extends State<pinCodeSearch> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
+
+  bool isValidPinCode(String pinCode){
+    if(pinCode.length!=6 || pinCode[0]=='0') return false;
+    return true;
+  }
+
+  var pincodeWidgets = <Widget>[];
+  var pincode="";
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +35,36 @@ class _codeSearchState extends State<codeSearch> {
                   child: SizedBox(
                       width: _size.width * 0.7,
                       child: TextFormField(
-                        decoration: InputDecoration(hintText: "Enter Pincode"),
+                        onSaved: (inp) {
+                          pincode = inp!;
+                        },
+                        validator: (inp){
+                          if(!isValidPinCode(inp!)) return "PinCode is not valid";
+                          return null;
+                        },
+                        maxLength: 6,
+                        decoration: InputDecoration(hintText: "Enter Pincode",
+                        suffixIcon: IconButton(onPressed: (){
+                          if (_form.currentState!.validate()) {
+                            _form.currentState!.save();
+                            pincodeWidgets.add(Text(pincode));
+                          }
+                        }, icon: Icon(Icons.add_box))),
                       )),
                 ),
               ),
             ),
-
+            Expanded(
+              child: ListView.builder(itemCount: pincodeWidgets.length, itemBuilder: (BuildContext context,int index){
+                return Container(
+                  height: 50,
+                  margin: EdgeInsets.all(2),
+                  child: Center(
+                      child: pincodeWidgets[index],
+                  ),
+                );
+              },),
+            ),
           ],
         ),
       ),
