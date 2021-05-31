@@ -5,6 +5,7 @@ import 'package:cowinbooking/Metadata.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class NetworkCalls {
   // ignore: non_constant_identifier_names
@@ -19,6 +20,10 @@ class NetworkCalls {
       "https://cdn-api.co-vin.in/api/v2/admin/location/states";
   static final String districts =
       "https://cdn-api.co-vin.in/api/v2/admin/location/districts/";
+
+  static final String calendar_pincode_url =
+      "https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode={0}&date={1}";
+
   static final MetaData meta = Get.put(MetaData());
 
   static Future<http.Response> getOTP(String number) async {
@@ -77,6 +82,40 @@ class NetworkCalls {
     };
     http.Response response =
         await http.get(Uri.parse(districts + id.toString()), headers: headers);
+    return jsonDecode(response.body);
+  }
+
+  static String encodeMap(Map data) {
+    return data.keys.map((key) => "${Uri.encodeComponent(key)}=${Uri.encodeComponent(data[key])}").join("&");
+  }
+
+  static Future<Map> getCenter(var pincode,
+      {var date, var vaccine}) async{
+    Map<String, String>? headers = {
+      'origin': 'https://selfregistration.cowin.gov.in/',
+      'referer': 'https://selfregistration.cowin.gov.in/',
+      'Content-Type': 'application/json'
+    };
+
+    if(date==null){
+      var date_now = DateTime.now();
+      DateFormat formatter = DateFormat('dd-MM-yyyy');
+      date = formatter.format(date_now);
+    }
+
+    Map queryParameters = {};
+
+    queryParameters['pincode'] = pincode;
+    queryParameters['date'] = date;
+    if (vaccine!=null) queryParameters['vaccine'] = vaccine;
+
+    String url = calendar_pincode_url;
+    url = url.replaceAll("{0}", pincode);
+    url = url.replaceAll("{1}", date);
+    print(url);
+
+    http.Response response = await http.get(Uri.parse(url), headers: headers);
+    print(response.body);
     return jsonDecode(response.body);
   }
 }

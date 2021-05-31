@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cowinbooking/NetworkCalls.dart';
+import 'package:cowinbooking/Metadata.dart' as Meta;
+import 'package:get/get.dart';
 
 class pinCodeSearch extends StatefulWidget {
   @override
@@ -8,13 +11,13 @@ class pinCodeSearch extends StatefulWidget {
 class _pinCodeSearchState extends State<pinCodeSearch> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
-  bool isValidPinCode(String pinCode){
-    if(pinCode.length!=6 || pinCode[0]=='0') return false;
+  bool isValidPinCode(String pinCode) {
+    if (pinCode.length != 6 || pinCode[0] == '0') return false;
     return true;
   }
 
-  var pincodeWidgets = <Widget>[];
-  var pincode="";
+  Meta.MetaData control = Get.put(Meta.MetaData());
+  var pincode = "";
 
   @override
   Widget build(BuildContext context) {
@@ -38,32 +41,56 @@ class _pinCodeSearchState extends State<pinCodeSearch> {
                         onSaved: (inp) {
                           pincode = inp!;
                         },
-                        validator: (inp){
-                          if(!isValidPinCode(inp!)) return "PinCode is not valid";
+                        validator: (inp) {
+                          if (!isValidPinCode(inp!))
+                            return "Pincode is not valid";
+                          if (control.pincodesList.contains(inp))
+                            return "Pincode already added";
                           return null;
                         },
                         maxLength: 6,
-                        decoration: InputDecoration(hintText: "Enter Pincode",
-                        suffixIcon: IconButton(onPressed: (){
-                          if (_form.currentState!.validate()) {
-                            _form.currentState!.save();
-                            pincodeWidgets.add(Text(pincode));
-                          }
-                        }, icon: Icon(Icons.add_box))),
+                        decoration: InputDecoration(
+                            hintText: "Enter Pincode",
+                            counter: Text(""),
+                            suffixIcon: IconButton(
+                                onPressed: () async {
+                                  if (_form.currentState!.validate()) {
+                                    setState(() {
+                                      _form.currentState!.save();
+                                      control.addPincode(pincode);
+                                    });
+                                    // var response = await NetworkCalls.getCenter(pincode);
+                                  }
+                                },
+                                icon: Icon(Icons.add_box))),
                       )),
                 ),
               ),
             ),
             Expanded(
-              child: ListView.builder(itemCount: pincodeWidgets.length, itemBuilder: (BuildContext context,int index){
-                return Container(
-                  height: 50,
-                  margin: EdgeInsets.all(2),
-                  child: Center(
-                      child: pincodeWidgets[index],
-                  ),
-                );
-              },),
+              child: ListView.builder(
+                itemCount: control.pincodesList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 50,
+                    margin: EdgeInsets.all(2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Text(control.pincodesList[index]),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            control.removePincode(control.pincodesList[index]);
+                          },
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),

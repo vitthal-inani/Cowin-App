@@ -5,6 +5,7 @@ class MetaData extends GetxController {
   String? _mobile;
   String? _token;
   List? _bens=[];
+  List<String>? _pincodesList=[];
 
   String? get txnId => _txnId;
 
@@ -12,6 +13,9 @@ class MetaData extends GetxController {
 
   String? get token => _token;
   List? get bens => _bens;
+
+
+  List get pincodesList => _pincodesList!;
 
   set txnId(String? number) {
     _txnId = number;
@@ -30,5 +34,12 @@ class MetaData extends GetxController {
   }
   void removeBen(String? number){
     _bens!.remove(number);
+  }
+
+  void addPincode(String? pincode){
+    _pincodesList!.add(pincode!);
+  }
+  void removePincode(String? pincode){
+    _pincodesList!.remove(pincode!);
   }
 }
